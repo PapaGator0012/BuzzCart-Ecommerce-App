@@ -16,7 +16,7 @@ const dispatch = useDispatch()
   return (
     <div className="P-6">
         <div className="mb-6">
-            <Link to="/admin" className='text-2xl font-medium'>Rabbit</Link>
+            <Link to="/admin" className='text-2xl font-medium'>Buzzcart</Link>
         </div>
         <h2 className="text-xl font-medium mb-6 text-center">Admin Dashboard</h2>
           <nav className="flex flex-col space-y-4">

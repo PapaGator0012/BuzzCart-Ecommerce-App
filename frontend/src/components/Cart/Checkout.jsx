@@ -6,7 +6,7 @@ import axios from "axios";
 
 const Checkout = () => {
 const [CheckoutId , setCheckOutId]= useState(null)
-   
+     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const {cart,loading,error} = useSelector((state)=>state.cart)
@@ -44,33 +44,68 @@ useEffect(()=>{
             }
         }
     }
-    const handelPaymentSuccess = async(details)=>{
-      try {
-        const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,{paymentStatus:"paid",paymentDetails:details},
-            {
-                headers:{Authorization:`Bearer ${localStorage.getItem("userToken")}`,},
-            }
-        )
+    // const handelPaymentSuccess = async(details)=>{
+    //   try {
+    //     const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,{paymentStatus:"paid",paymentDetails:details},
+    //         {
+    //             headers:{Authorization:`Bearer ${localStorage.getItem("userToken")}`,},
+    //         }
+    //     )
        
-            await handelFinalizeCheckout(CheckoutId)
+    //         await handelFinalizeCheckout(CheckoutId)
     
-      } catch (error) {
-        console.error(error)
-      }
+    //   } catch (error) {
+    //     console.error(error)
+    //   }
        
-    }
-    const handelFinalizeCheckout = async(CheckoutId)=>{
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,{
-                headers:{
-                    Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-                },
-            })
-        navigate("/order-confirmation")
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    // }
+    const handlePaymentSuccess = async (paymentMethod) => {
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,
+      { paymentStatus: "paid", paymentMethod: paymentMethod },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      }
+    );
+
+    await handleFinalizeCheckout(CheckoutId);
+  } catch (error) {
+    console.error("Payment failed", error);
+  }
+};
+    // const handelFinalizeCheckout = async(CheckoutId)=>{
+    //     try {
+    //         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,{
+    //             headers:{
+    //                 Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+    //             },
+    //         })
+    //     navigate("/order-confirmation")
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
+    const handleFinalizeCheckout = async (CheckoutId) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      }
+    );
+
+    navigate("/order-confirmation");
+  } catch (error) {
+    console.error("Error finalizing checkout", error);
+  }
+};
+
     if(loading) return <p>Loading Cart...</p>
     if(error) return <p>Error: {error}</p>
     if(!cart || !cart.products || cart.products.length===0){
@@ -115,24 +150,36 @@ useEffect(()=>{
                 </div>
                 <div className="mb-4">
                     <label htmlFor="" className="block text-gray-700">Country</label>
-                    <input type="text" className='w-full p-2 border rounded' value={shippingAddress.address}  onChange={(e)=>setShippingAddress({...shippingAddress,country:e.target.value,})} required/>
+                    <input type="text" className='w-full p-2 border rounded' value={shippingAddress.country} onChange={(e) => setShippingAddress({...shippingAddress, country: e.target.value})} required />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="" className="block text-gray-700">Phone</label>
-                    <input type="text" className='w-full p-2 border rounded' value={shippingAddress.address}  onChange={(e)=>setShippingAddress({...shippingAddress,phone:e.target.value,})} required/>
+                    <input type="text" className='w-full p-2 border rounded' value={shippingAddress.phone}  onChange={(e)=>setShippingAddress({...shippingAddress,phone:e.target.value,})} required/>
                 </div>
 
                 <div className="mt-6">
-                    {!CheckoutId ? (
-                        <button type='submit' className='w-full bg-black text-white py-3 rounded'>Continue to Payment</button>
-                    ):(
-                        <div className="">
-                            <h3 className="text-lg mb-4">Pay with Paypal</h3>
-                            {/* 4:57 hrs  */}
-                            {/* paypal button component jsx file / use another api  */}
-                        </div>
-                    )}
-                </div>
+  {!CheckoutId ? (
+    <button type="submit" className="w-full bg-black text-white py-3 rounded">
+      Continue to Payment
+    </button>
+  ) : (
+    <div>
+      <h3 className="text-lg mb-4">Choose Payment Method</h3>
+      <button 
+        className="w-full bg-blue-500 text-white py-3 rounded mb-4"
+        onClick={() => handlePaymentSuccess("Credit Payment")}
+      >
+        Proceed with Credit
+      </button>
+      <button
+        className="w-full bg-green-500 text-white py-3 rounded"
+        onClick={() => handlePaymentSuccess("Paid")}
+      >
+        I Have Paid
+      </button>
+    </div>
+  )}
+</div>
             </form>
         </div>
         {/* Right section  */}

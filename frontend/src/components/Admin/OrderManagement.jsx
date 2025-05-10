@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { fetchAllOrders } from '../../redux/slices/adminOrderSlice'
+import { fetchAllOrders, updateOrderStatus } from '../../redux/slices/adminOrderSlice'
 
 const OrderManagement = () => {
     // const orders = [
@@ -56,7 +56,11 @@ useEffect(()=>{
                                     #{order._id}
                                 </td>
                                 <td className="p-4">{order.user.name}</td>
-                                <td className="p-4">{order.TotalPrice.toFixed(2)}</td>
+<td className="p-4">
+  {order.totalPrice !== undefined && order.totalPrice !== null
+    ? Number(order.totalPrice).toFixed(2)
+    : 'N/A'}
+</td>
                                 <td className="p-4">
                                     <select name="" id="" value={order.status} onChange={(e)=> handelStatusChange(order._id,e.target.value)} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5'>
                                         <option value="Processing">Processing</option>

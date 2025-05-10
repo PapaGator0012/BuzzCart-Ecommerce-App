@@ -14,7 +14,28 @@ const productAdminRoutes = require("./routes/productAdminRoutes")
 const adminOrderRoutes = require("./routes/adminOrderRoutes")
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+const corsOptions={
+    origin:(origin,callback)=>{
+        const allowedorigins =[
+            `https://buzz-cart-ecommerce-app-iq5h.vercel.app`,
+            `http://localhost:5173`,process.env.FRONTEND_URL,
+        ];
+        if(!origin || allowedorigins.includes(origin)){
+            callback(null,true);
+            console.log("allowedOrigin:",origin)
+        }else{
+            callback(new Error("Not Allowed by CORS"))
+        }
+
+    },
+    methods:['GET','POST','PUT','DELETE','OPTIONS'],allowedHeaders:['Content-type','Authorization'],credentials:true,
+
+}
+
+
+
+app.use(cors(corsOptions));
 
 dotenv.config()
 const PORT = process.env.PORT || 9000  ;

@@ -1,5 +1,6 @@
 const express = require("express")
 const Cart = require("../models/Cart")
+const User = require("../models/user")
 const Product= require("../models/Product")
 const {protect} = require("../middleware/authMiddleware")
 
@@ -8,6 +9,10 @@ const router = express.Router();
 
 //helper function to get a cart by user Id or guest Id
 const getCart = async(userId,guestId)=>{
+    console.log("DEBUG: getCart called with:");
+    console.log("  userId:", userId);
+    console.log("  guestId:", guestId);
+    
     if(userId){
         return await Cart.findOne({user:userId});
     }else if (guestId){
@@ -135,6 +140,7 @@ router.delete("/",async(req,res)=>{
     const {productId,size,color,guestId,userId}=req.body; 
     try {
         let cart = await getCart(userId,guestId)
+        console.log("Cart:", cart);
         if(!cart) return res.status(404).json({message:"Cart not found"})
             const productIndex = cart.products.findIndex((p)=>
         p.productId.toString()===productId && p.size===size && p.color===color

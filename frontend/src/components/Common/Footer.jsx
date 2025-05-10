@@ -71,13 +71,13 @@ const Footer = () => {
                     </a>
                 </div>
                 <p className='text-gray-500'>Call Us</p>
-                <p><FiPhoneCall className='inline-block mr-2'></FiPhoneCall>0333-927-1017</p>
+                <p><FiPhoneCall className='inline-block mr-2'></FiPhoneCall>03309271117</p>
             </div>
         </div>
         {/* footer bottom  */}
         <div className="container mx-auto mt-12 px-4 lg:px-0 border-t border-gray-200 pt-6">
             <p className='text-gray-500 text-sm tracking-tighter text-center'>
-            © 2025 , HassamJan. All Rights Reserved.
+            © 2025 , SyedHasherJan. All Rights Reserved.
             </p>
         </div>
     </footer>

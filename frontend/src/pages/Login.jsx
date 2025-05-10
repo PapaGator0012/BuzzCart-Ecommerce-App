@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import login from "../assets/login.webp"
 import {loginUser} from "../redux/slices/authSlice" // redux
 import {useDispatch, useSelector} from "react-redux"
+import { mergeCart } from '../redux/slices/cartSlice'
 const Login = () => {
     const [email , setEmail] = useState("")
     const [password, setPassword] = useState("")

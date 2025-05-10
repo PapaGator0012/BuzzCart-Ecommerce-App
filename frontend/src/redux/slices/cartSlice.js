@@ -46,22 +46,46 @@ export const addToCart=createAsyncThunk("cart/addToCart",async({productId,quanti
 })
 
 //update the quanity of an item in the cart
-export const updateCartItemQuantity = createAsyncThunk("cart/updateCartItemQuantity",async({productId,quantity,guestId,userId,size,color},{rejectWithValue})=>{
-    try {
-        const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/cart`,{
-            productId,
-            quantity,
-            guestId,
-            userId,
-            size,
-            color,
-        })
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data)
+// export const updateCartItemQuantity = createAsyncThunk("cart/updateCartItemQuantity",async({productId,quantity,guestId,userId,size,color},{rejectWithValue})=>{
+//     try {
+//         const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/cart`,{
+//             productId,
+//             quantity,
+//             guestId,
+//             userId,
+//             size,
+//             color,
+//         })
+//         return response.data;
+//     } catch (error) {
+//         return rejectWithValue(error.response?.data)
+//     }
+// })
+export const updateCartItemQuantity = createAsyncThunk(
+    "cart/updateCartItemQuantity",
+    async({productId, quantity, guestId, userId, size, color}, {rejectWithValue}) => {
+        try {
+            // Using axios with the correct configuration for PUT requests
+            const response = await axios({
+                method: "PUT",
+                url: `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
+                data: {
+                    productId,
+                    quantity,
+                    guestId,
+                    userId,
+                    size,
+                    color
+                }
+            });
+            
+            return response.data;
+        } catch (error) {
+            console.error("Update cart error:", error);
+            return rejectWithValue(error.response?.data || "Failed to update cart");
+        }
     }
-})
-
+);
 //remove and item from the cart
 // export const removeFromCart=createAsyncThunk("cart/removeFromCart",async({productId,guestId,userId,size,color},{rejectWithValue})=>{
 //     try {
@@ -78,16 +102,44 @@ export const updateCartItemQuantity = createAsyncThunk("cart/updateCartItemQuant
 //         return rejectWithValue(error.response.data)
 //     }
 // })
-export const removeFromCart = createAsyncThunk("cart/removeFromCart", async ({productId, guestId, userId, size, color}, {rejectWithValue}) => {
-    try {
-        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-            data: { productId, guestId, userId, size, color }  // Change to 'data' instead of 'params'
-        });
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data);
+//-------------------------------------------------------------
+// export const removeFromCart = createAsyncThunk("cart/removeFromCart", async ({productId, guestId, userId, size, color}, {rejectWithValue}) => {
+//     try {
+//         const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+//             data: { productId, guestId, userId, size, color }  // Change to 'data' instead of 'params'
+//         });
+//         console.log("Remove from cart response:", response.data); 
+//         return response.data;
+//     } catch (error) {
+//         console.log("Catch Error in cartSlice",error)
+//         return rejectWithValue(error.response?.data);
+//     }
+// });
+export const removeFromCart = createAsyncThunk(
+    "cart/removeFromCart", 
+    async({productId, guestId, userId, size, color}, {rejectWithValue}) => {
+        try {
+            // Using axios with the correct configuration for DELETE requests
+            const response = await axios({
+                method: "DELETE",
+                url: `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
+                data: {
+                    productId,
+                    guestId,
+                    userId,
+                    size,
+                    color
+                }
+            });
+            
+            console.log("Remove from cart response:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Remove from cart error:", error);
+            return rejectWithValue(error.response?.data || "Failed to remove item");
+        }
     }
-});
+);
 //merge guest cart into a user cart
 export const mergeCart = createAsyncThunk("cart/mergeCart",async({guestId,user},{rejectWithValue})=>{
     try {
